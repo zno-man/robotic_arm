@@ -2,6 +2,7 @@
 import rospy
 from std_msgs.msg import Float64
 import math
+import time
 
 rospy.init_node('control')
 end_effector = 90
@@ -12,9 +13,9 @@ end_tip = 0
 end_slide_vel = 0 #can be -0.1(deploy) or 0.1(retract)
 vel = [0.1,-0.1]
 
-lo1 = [0,0,0]
-lo2 = [45,45,0]
-lo3 = [90,90,0]
+lo1 = [30 , 70 , -70]
+lo2 = [-90 , 45 , -90]
+lo3 = [90 , 0 , -45]
 
 
 pub_end_effector = rospy.Publisher('/robot_arm_iteration_3/Rev10_position_controller/command', Float64, queue_size=1)
@@ -87,6 +88,20 @@ def move_to(loc): #input in degrees
             lnk3 = lst[2]+1
 
 
+def move_end_effector(ang):
+    global end_effector
+    
+    while not rospy.is_shutdown():
+        temp =  ang - end_effector
+        
+        if temp>0:
+            end_effector += 1
+        elif temp<0:
+            end_effector -= 1
+        else :
+            break
+        pub_end_effector.publish(math.radians(end_effector))
+        r.sleep()
 
 def debug():
     pass
@@ -131,11 +146,26 @@ while(True):
         # pub_lnk3.publish(math.radians(lo3[2]))
         move_to(lo3)
     elif inp == "5":
-        move_to(lo1)
+        move_end_effector(-lnk2-lnk3)
+        pub_end_slide_vel.publish(-0.1)
+        time.sleep(1)
+        pub_end_slide_vel.publish(0.1)
+        time.sleep(1)
+        move_end_effector(-lnk2-lnk3+90)
     elif inp == "6":
-        pass
+        move_end_effector(-lnk2-lnk3+45)
+        pub_end_slide_vel.publish(-0.1)
+        time.sleep(1)
+        pub_end_slide_vel.publish(0.1)
+        time.sleep(1)
+        move_end_effector(-lnk2-lnk3+90)
     elif inp == "7":
-        pass
+        move_end_effector(-lnk2-lnk3-90)
+        pub_end_slide_vel.publish(-0.1)
+        time.sleep(1)
+        pub_end_slide_vel.publish(0.1)
+        time.sleep(1)
+        move_end_effector(-lnk2-lnk3+90)
     elif inp == "8":
         pass
     elif inp == "9":
