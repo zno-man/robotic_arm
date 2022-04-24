@@ -1,22 +1,8 @@
 #!/usr/bin/env python3
+import time
 import rospy
 from std_msgs.msg import Float64
 import math
-import time
-
-rospy.init_node('control')
-end_effector = 90
-lnk3 = 0
-lnk2 = 0
-lnk1 = 0
-end_tip = 0
-end_slide_vel = 0 #can be -0.1(deploy) or 0.1(retract)
-vel = [0.1,-0.1]
-
-lo1 = [30 , 70 , -70]
-lo2 = [-90 , 45 , -90]
-lo3 = [90 , 0 , -45]
-
 
 pub_end_effector = rospy.Publisher('/robot_arm_iteration_3/Rev10_position_controller/command', Float64, queue_size=1)
 pub_lnk3 = rospy.Publisher('/robot_arm_iteration_3/Rev11_position_controller/command', Float64, queue_size=1)
@@ -25,25 +11,39 @@ pub_lnk1 = rospy.Publisher('/robot_arm_iteration_3/Rev13_position_controller/com
 pub_end_tip = rospy.Publisher('/robot_arm_iteration_3/Rev15_position_controller/command', Float64, queue_size=1)
 pub_end_slide_vel = rospy.Publisher('/robot_arm_iteration_3/Slider14_position_controller/command', Float64, queue_size=1)
 
-count = 0
-bool = True
+end_effector = 90
+lnk3 = 0
+lnk2 = 0
+lnk1 = 0
+end_tip = 0
+end_slide_vel = 0 #can be -0.1(deploy) or 0.1(retract)
+vel = [0.1,-0.1]
 
-r = rospy.Rate(100)
+lo1 = [30 , 70 , -70] #pick up 
+lo2 = [-90 , 45 , -90] #collection 
+lo3 = [90 , 0 , -45] #deposit
 
+def read_data():
+    f = open("/home/jayee/Desktop/project/prototyping stuff/communication.txt","r")
+    lst = []
+    for i in f:
+        lst.append(int(i))
+    f.close()
+    return lst
 
-#functions
+def get_data():
 
+    complete = False
+    while not complete :
+        try:
+            lst = read_data()
+        except:
+            pass
+        else:
+            complete = True
+        #time.sleep(1)
+    return lst
 
-
-def configure():
-    print("Enter loc 1 cordinates:",end = '')
-    lo1 = list(map(float , input().strip().split()))
-    print("Enter loc 2 cordinates:",end = '')
-    lo2 = list(map(float , input().strip().split()))
-    print("Enter loc 3 cordinates:",end = '')
-    lo3 = list(map(float , input().strip().split()))
-    print(lo1,lo2,lo3)
-    return lo1,lo2,lo3
 
 def move_to(loc): #input in degrees
     global lnk1,lnk2,lnk3,end_effector
@@ -52,7 +52,7 @@ def move_to(loc): #input in degrees
     
 
     for i in range(3): # i = 0 lnk1 , i =1 lnk2 , i = 2 lnk 3
-        temp = loc[i]-lst[i]
+        temp = loc[i]-lst[i] #target - current location 
         if temp>0:
             while not rospy.is_shutdown():
                 lst[i]+=1 
@@ -88,6 +88,9 @@ def move_to(loc): #input in degrees
             lnk3 = lst[2]+1
 
 
+
+
+
 def move_end_effector(ang):
     global end_effector
     
@@ -103,103 +106,77 @@ def move_end_effector(ang):
         pub_end_effector.publish(math.radians(end_effector))
         r.sleep()
 
-def debug():
-    pass
+
+def write_data():
+    f = open("/home/jayee/Desktop/project/prototyping stuff/communication.txt","w")
+    f.write('0\n')
+    f.close()
+
     
 
-#driver
+def refresh():
+    complete = False
+    while not complete :
+        try:
+            write_data()
+        except:
+            pass
+        else:
+            complete = True
+    print("refreshed")
 
-while(True):
-    print("""
-    main menu
-    ---------
-      
-        0) debug
-        1) config
-        2) goto l1
-        3) goto l2
-        4) goto l3
-        5) pick up
-        6) collect
-        7) deposit
-        8) adjust angles
-        9) exit
-              """)
-    print(":",end = "")
+
+
+
+rospy.init_node('control')
+pub = rospy.Publisher('/robot_arm_iteration_3/Rev13_position_controller/command', Float64, queue_size=10)
+r = rospy.Rate(100)
+
+
+
+while True:
+    
+    lst = get_data()
+    inp = lst[0]
+    if inp == 1:   # config
+        #lo1,lo2,lo3 = configure()
+        break
         
-    inp = input()
-    if inp == "1":   # config
-        lo1,lo2,lo3 = configure()
-    elif inp == "2": # goto l1
-        # pub_lnk1.publish(math.radians(lo1[0]))
-        # pub_lnk2.publish(math.radians(lo1[1]))
-        # pub_lnk3.publish(math.radians(lo1[2]))
+    elif inp == 2: # goto l1
         move_to(lo1)
-    elif inp == "3": # goto l2
-        # pub_lnk1.publish(math.radians(lo2[0]))
-        # pub_lnk2.publish(math.radians(lo2[1]))
-        # pub_lnk3.publish(math.radians(lo2[2]))
+    elif inp == 3: # goto l2
         move_to(lo2)
-    elif inp == "4": # goto l3
-        # pub_lnk1.publish(math.radians(lo3[0]))
-        # pub_lnk2.publish(math.radians(lo3[1]))
-        # pub_lnk3.publish(math.radians(lo3[2]))
+    elif inp == 4: # goto l3
         move_to(lo3)
-    elif inp == "5":
+
+    elif inp == 5:
         move_end_effector(-lnk2-lnk3)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
         pub_end_slide_vel.publish(0.1)
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
-    elif inp == "6":
+        
+    elif inp == 6:
         move_end_effector(-lnk2-lnk3+45)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
         pub_end_slide_vel.publish(0.1)
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
-    elif inp == "7":
+        
+    elif inp == 7:
         move_end_effector(-lnk2-lnk3-90)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
         pub_end_slide_vel.publish(0.1)
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
-    elif inp == "8":
-        pass
-    elif inp == "9":
-        break
-    elif inp == "0":
-        pass
-
-print("exiting menu...")
-
-
-
-
-
-
-
-
-
-
-
-
-# while not rospy.is_shutdown():
-#     print(":",end = '')
-#     angle = math.radians(int(input()))
-#     # angle = rospy.get_time() % 360 
-#     # pub_end_effector.publish(angle)
-#     # pub_lnk3.publish(angle)
-#     pub_lnk2.publish(angle)
-#     # pub_lnk1.publish(angle)
-#     # pub_end_tip.publish(angle)
-    
-#     # count+=1
-#     # if count == 100:
-#     #     pub_end_slide_vel.publish(vel[int(bool)])
-#     #     bool = not bool
-#     #     count = 0
         
-#     r.sleep()
+    elif inp == 8:
+        pass
+    
+    if inp!=0:
+        refresh()
+    print(inp)
+    time.sleep(1)
