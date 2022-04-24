@@ -1,11 +1,25 @@
-from flask import Flask #pip install flask (or) sudo apt install python3-flask
+from flask import Flask, render_template, request
 from flask_cors import CORS #pip install -U flask-cors 
- 
+
 app = Flask(__name__)
 CORS(app)
- 
- 
-@app.route("/")
+
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        if request.form.get('action1') == 'VALUE1':
+            pass # do something
+        elif  request.form.get('action2') == 'VALUE2':
+            pass # do something else
+        else:
+            pass # unknown
+    elif request.method == 'GET':
+        return render_template('index.html', form='form')
+    
+    return render_template("index.html")
+
+@app.route("/slider")
+
 def helloSlider():
     return '''
 <html>
@@ -33,9 +47,7 @@ slider.oninput = function() {
 </body>
 </html>
 '''
- 
- 
- 
- 
+
+
 if __name__ == "__main__":
     app.run(debug=True)
