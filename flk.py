@@ -50,11 +50,13 @@ def write_data():
         val3 = ch_t2
         val4 = ch_t3
         val5 = ch_t4
-    
+    print([val1,val2,val3,val4,val5,val6,val7,val8,val9,val10])
     for i in [val1,val2,val3,val4,val5,val6,val7,val8,val9,val10]:
         f.write(str(i))
         f.write("\n")
     f.close()
+
+
 
 def set_data():
     complete = False
@@ -82,49 +84,35 @@ def index():
 
             
         elif  request.form.get('2') == 'pickup     location':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 2
             set_data()
         elif  request.form.get('3') == 'collection location':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 3 
             set_data()
         elif  request.form.get('4') == 'deposit    location':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 4
             set_data()
         elif  request.form.get('5') == 'pickup     operation':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 5
             set_data()
         elif  request.form.get('6') == 'collection operation':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 6
             set_data()
         elif  request.form.get('7') == 'deposit    operation':
-            lnk1 = 90
-            lnk2 = 90
-            lnk3 = 90
             state = 7
             set_data()
 
         elif  request.form.get('8') == 'adjust     angles  ':
-            stat = 8
+            state = 8
             return redirect(url_for('adjust'))
             
-            
+        elif  request.form.get('9') == 'prev tip location  ':
+            state = 9
+            set_data()
+                      
         else:
             pass # unknown
+        
     elif request.method == 'GET':
         return render_template('index.html', form='form')
     
@@ -137,6 +125,7 @@ def my_form():
 
 @app.route('/configu', methods=['POST'])
 def my_form_post():
+    global lo1,lo2,lo3
     
     x1 = float(request.form['x1'])
     y1 = float(request.form['y1'])
@@ -188,10 +177,10 @@ def adjust():
     
 
     set_data()
-    # ch_t1 = 0
-    # ch_t2 = 0
-    # ch_t3 = 0
-    # ch_t4 = 0
+    ch_t1 = 0
+    ch_t2 = 0
+    ch_t3 = 0
+    ch_t4 = 0
     return render_template("adjust.html")
 
 
