@@ -163,7 +163,7 @@ def inverse_kinematics(lo):
         theta_initial=90
     else:
         theta_initial=-90
-        
+
     quadrant = get_quadrant(x,y)
     if quadrant==2:
         theta_initial=180-theta_initial
@@ -172,7 +172,9 @@ def inverse_kinematics(lo):
     elif quadrant==4:
         theta_initial=360-theta_initial
         
-        
+    theta_initial=theta_initial%360
+    if theta_initial>180:
+        theta_initial=360-theta_initial  
 
     x2=float(math.sqrt(x*x+y*y))
     y2=float(z-base_height)
