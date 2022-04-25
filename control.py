@@ -18,6 +18,7 @@ lnk1 = 0
 end_tip = 0
 end_slide_vel = 0 #can be -0.1(deploy) or 0.1(retract)
 vel = [0.1,-0.1]
+prev_end_effector = end_effector
 
 lo1 = [30 , 70 , -70] #pick up 
 lo2 = [-90 , 45 , -90] #collection 
@@ -183,16 +184,17 @@ while True:
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
         
-    elif inp == 6:
+    elif inp == 6: #collection operation
         state = 6
-        move_end_effector(-lnk2-lnk3+45)
+        #move_end_effector(prev_end_effector)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
+        #add a twist operation here
         pub_end_slide_vel.publish(0.1)
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
         
-    elif inp == 7:
+    elif inp == 7: #deposition operation
         state = 7
         move_end_effector(-lnk2-lnk3-90)
         pub_end_slide_vel.publish(-0.1)
@@ -205,6 +207,33 @@ while True:
         state = 8
         
         
+        for i in range(1,5):
+            ang = int(lst[i])
+            if i == 1 :
+                lnk1+=ang*3
+            elif i == 2:
+                lnk2+=ang*3
+            elif i == 3:
+                lnk3+=ang*3
+            elif i == 4:
+                end_effector+=ang*3
+
+            lo2=[lnk1,lnk2,lnk3]
+            prev_end_effector = end_effector
+
+            pub_lnk1.publish(math.radians(lnk1))
+            pub_lnk2.publish(math.radians(lnk2))
+            pub_lnk3.publish(math.radians(lnk3))
+            pub_end_effector.publish(math.radians(end_effector))
+
+    elif inp == 9: #previous angle
+        state = 9
+        move_end_effector(prev_end_effector)
+
+    elif inp == 0:
+        state = 0
+
+
     elif inp == 0:
         state = 0
         
