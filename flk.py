@@ -1,18 +1,57 @@
 #!/usr/bin/env python3
 import time
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_cors import CORS #pip install -U flask-cors 
+
 
 lnk1 = 0
 lnk2 = 0
 lnk3 = 0
 state = 0
+ch_t1 = 0
+ch_t2 = 0
+ch_t3 = 0
+ch_t4 = 0
+
+lo1 = [50,0,50] #pick up 
+lo2 = [100 , 50 , 0] #collection 
+lo3 = [-100 ,50 , 0] #deposit
 
 def write_data():
-    global state,lnk1,lnk2,lnk3
+    global state,ch_t1,ch_t2,ch_t3,ch_t4,lo1,lo2,lo3
     f = open("communication.txt","w")
     lst = []
-    for i in [state,lnk1,lnk2,lnk3]:
+    val1 = state
+    val2 = 0
+    val3 = 0
+    val4 = 0
+    val5 = 0
+    val6 = 0
+    val7 = 0
+    val8 = 0 
+    val9 = 0
+    val10 = 0
+
+    if state == 1:
+        val2 = lo1[0]
+        val3 = lo1[1]
+        val4 = lo1[2]
+        val5 = lo2[0]
+        val6 = lo2[1]        
+        val7 = lo2[2]
+        val8 = lo3[0]
+        val9 = lo3[1]
+        val10 = lo3[2]
+
+
+
+    elif state == 8:
+        val2 = ch_t1
+        val3 = ch_t2
+        val4 = ch_t3
+        val5 = ch_t4
+    
+    for i in [val1,val2,val3,val4,val5,val6,val7,val8,val9,val10]:
         f.write(str(i))
         f.write("\n")
     f.close()
@@ -36,14 +75,13 @@ def index():
     global lnk1,lnk2,lnk3,state
 
     if request.method == 'POST':
-        if request.form.get('1') == 'config':
-            lnk1 = 0
-            lnk2 = 0
-            lnk3 = 0
+        if request.form.get('1') == 'config             ':
+            print("config")
             state = 1
-            set_data()
+            return redirect(url_for('my_form'))
+
             
-        elif  request.form.get('2') == 'pickup location':
+        elif  request.form.get('2') == 'pickup     location':
             lnk1 = 90
             lnk2 = 90
             lnk3 = 90
@@ -55,13 +93,13 @@ def index():
             lnk3 = 90
             state = 3 
             set_data()
-        elif  request.form.get('4') == 'deposit location':
+        elif  request.form.get('4') == 'deposit    location':
             lnk1 = 90
             lnk2 = 90
             lnk3 = 90
             state = 4
             set_data()
-        elif  request.form.get('5') == 'pickup operation':
+        elif  request.form.get('5') == 'pickup     operation':
             lnk1 = 90
             lnk2 = 90
             lnk3 = 90
@@ -73,12 +111,17 @@ def index():
             lnk3 = 90
             state = 6
             set_data()
-        elif  request.form.get('7') == 'deposit operation':
+        elif  request.form.get('7') == 'deposit    operation':
             lnk1 = 90
             lnk2 = 90
             lnk3 = 90
             state = 7
             set_data()
+
+        elif  request.form.get('8') == 'adjust     angles  ':
+            stat = 8
+            return redirect(url_for('adjust'))
+            
             
         else:
             pass # unknown
@@ -86,6 +129,73 @@ def index():
         return render_template('index.html', form='form')
     
     return render_template("index.html")
+
+
+@app.route('/configu')
+def my_form():
+    return render_template('my-form.html')
+
+@app.route('/configu', methods=['POST'])
+def my_form_post():
+    
+    x1 = float(request.form['x1'])
+    y1 = float(request.form['y1'])
+    z1 = float(request.form['z1'])
+    
+    x2 = float(request.form['x2'])
+    y2 = float(request.form['y2'])
+    z2 = float(request.form['z2'])
+    
+    x3 = float(request.form['x3'])
+    y3 = float(request.form['y3'])
+    z3 = float(request.form['z3'])
+    lo1 = [x1,y1,z1]
+    lo2 = [x2,y2,z2]
+    lo3 = [x3,y3,z3]
+    
+    print(x1,y1,z1," ",x2,y2,z2," ",x3,y3,z3)
+    set_data()
+    return redirect(url_for('index'))
+
+
+
+@app.route("/adjust", methods=['GET', 'POST'])
+def adjust():
+    global ch_t1,ch_t2,ch_t3,ch_t4
+
+    if request.method == 'POST':
+        if request.form.get('-1') == '-':
+            ch_t1 = -1
+        elif  request.form.get('+1') == '+':
+            ch_t1 = +1
+        elif  request.form.get('-2') == '-':
+            ch_t2 = -1
+        elif  request.form.get('+2') == '+':
+            ch_t2 = +1
+        elif  request.form.get('-3') == '-':
+            ch_t3 = -1
+        elif  request.form.get('+3') == '+':
+            ch_t3 = +1
+        elif  request.form.get('-4') == '-':
+            ch_t4 = -1
+        elif  request.form.get('+4') == '+':
+            ch_t4 = +1
+        elif  request.form.get('5') == 'back':
+            return redirect(url_for('index'))
+        
+    elif request.method == 'GET':
+        return render_template('adjust.html', form='form')
+    
+
+    set_data()
+    # ch_t1 = 0
+    # ch_t2 = 0
+    # ch_t3 = 0
+    # ch_t4 = 0
+    return render_template("adjust.html")
+
+
+
 
 @app.route("/slider")
 
