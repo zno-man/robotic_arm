@@ -23,12 +23,16 @@ lo1 = [30 , 70 , -70] #pick up
 lo2 = [-90 , 45 , -90] #collection 
 lo3 = [90 , 0 , -45] #deposit
 
+state = 0
+
 def read_data():
-    f = open("/home/jayee/Desktop/project/prototyping stuff/communication.txt","r")
+    print("reading data")
+    f = open("/home/jayee/Desktop/project/prototyping stuff/communication.txt","r",)
     lst = []
     for i in f:
-        lst.append(int(i))
+        lst.append(i)
     f.close()
+    print(lst)
     return lst
 
 def get_data():
@@ -42,6 +46,7 @@ def get_data():
         else:
             complete = True
         #time.sleep(1)
+    #print(lst)
     return lst
 
 
@@ -60,7 +65,7 @@ def move_to(loc): #input in degrees
                     break
                 pub[i].publish(math.radians(lst[i]))
                 
-                if i>0: #other than for the base angle we must stabilise end effector
+                if i>0 and not lst[i] > loc[i]: #other than for the base angle we must stabilise end effector
                     end_effector -=1 
                     pub_end_effector.publish(math.radians(end_effector))
                     
@@ -72,14 +77,16 @@ def move_to(loc): #input in degrees
             lnk3 = lst[2]-1
         
         else:
+            
             while not rospy.is_shutdown(): 
-                if lst[i] < loc[i]:
+                if lst[i] < loc[i] :
                     break
+
                 pub[i].publish(math.radians(lst[i]))
                 lst[i]-=1
                 r.sleep()
 
-                if i>0: #other than for the base angle we must stabilise end effector
+                if i>0 and not lst[i] < loc[i]: #other than for the base angle we must stabilise end effector
                     end_effector +=1 
                     pub_end_effector.publish(math.radians(end_effector))
                     
@@ -137,19 +144,38 @@ r = rospy.Rate(100)
 while True:
     
     lst = get_data()
-    inp = lst[0]
+    inp = int(lst[0])
+     
     if inp == 1:   # config
         #lo1,lo2,lo3 = configure()
-        break
+        
+        lo1[0] = float(lst[1])
+        lo1[1] = float(lst[2])
+        lo1[2] = float(lst[3])
+
+        lo2[0] = float(lst[4])
+        lo2[1] = float(lst[5])
+        lo2[2] = float(lst[6])
+
+        lo3[0] = float(lst[7])
+        lo3[1] = float(lst[8])
+        lo3[2] = float(lst[9])
+
+        state = 1
+        #break
         
     elif inp == 2: # goto l1
+        state = 2
         move_to(lo1)
     elif inp == 3: # goto l2
+        state = 3
         move_to(lo2)
     elif inp == 4: # goto l3
+        state = 4
         move_to(lo3)
 
     elif inp == 5:
+        state = 5
         move_end_effector(-lnk2-lnk3)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
@@ -158,6 +184,7 @@ while True:
         move_end_effector(-lnk2-lnk3+90)
         
     elif inp == 6:
+        state = 6
         move_end_effector(-lnk2-lnk3+45)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
@@ -166,6 +193,7 @@ while True:
         move_end_effector(-lnk2-lnk3+90)
         
     elif inp == 7:
+        state = 7
         move_end_effector(-lnk2-lnk3-90)
         pub_end_slide_vel.publish(-0.1)
         time.sleep(1)
@@ -173,9 +201,14 @@ while True:
         time.sleep(1)
         move_end_effector(-lnk2-lnk3+90)
         
-    elif inp == 8:
-        pass
-    
+    elif inp == 8: #adjust angles
+        state = 8
+        
+        
+    elif inp == 0:
+        state = 0
+        
+
     if inp!=0:
         refresh()
     print(inp)
