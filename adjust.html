@@ -1,0 +1,71 @@
+<style>
+  body{
+    background-color: #B6FFCE;
+  }
+  h1  
+{color: black;
+  font-family: "Times New Roman";
+}
+input{
+  /* border: 2px solid red;
+  border-radius: 4px; */
+  text-align: center;
+  width:30;
+  background-color: #F7FD04;
+  border: 2px solid red;
+  border-radius: 10px;
+  color: black;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 30px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<h1><center>ADJUST ANGLES</center></h1>
+    <form method="post" > <!-- action="/" if you add this here it'll return to base url if any action is made -->
+        
+        <table class="center">
+            <tr>
+              <td><input type="submit" value="-" name="-1"/></td>
+              <center><td>Θ1</td></center>
+              <td><input type="submit" value="+" name="+1"/></td>
+            </tr>
+            <tr>
+              <td><input type="submit" value="-" name="-2"/></td>
+              <td>Θ2</td>
+              <td><input type="submit" value="+" name="+2"/></td>
+            </tr>
+            <tr>
+              <td><input type="submit" value="-" name="-3"/></td>
+              <td>Θ3</td>
+              <td><input type="submit" value="+" name="+3"/></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="-" name="-4"/></td>
+                <td>Θ4</td>
+                <td><input type="submit" value="+" name="+4"/></td>
+              </tr>
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+
+            </tr>
+            <tr>
+                
+                <td> </td>
+                <td> </td>
+                <td><input class="center" style="width: 150;background-color: red;margin: 4px 2px;"   type="submit" value="back" name="5"/></td>
+            </tr>
+            
+          </table>
+          
+    </form>

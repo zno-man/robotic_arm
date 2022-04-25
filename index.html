@@ -1,46 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>covid robot</title>
-</head>
+<style>
+    body{
+      background-color: #B6FFCE;
+}
+h1  
+{color: black;
+  font-family: "Times New Roman";
+}
+input{
+  /* border: 2px solid red;
+  border-radius: 4px; */
+  width:300;
+  background-color: #F98404;
+  border: 2px solid red;
+  border-radius: 10px;
+  color: black;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+
+}
+#initial{
+  background-color: #F7FD04;
+}
+#mid{
+  background-color: #F9B208;
+}
+</style>
+<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body>
-    <h1>Welcome to RobotControl</h1>
-   <!-- <h1>Welcome to RobotControl</h1>
-   <div class="slidecontainer">
-    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-    <p>Value: <span id="demo"></span></p>
-  </div>
-   
-  <script>
-  var slider = document.getElementById("myRange");
-  var output = document.getElementById("demo");
-  output.innerHTML = slider.value;
-   
-  slider.oninput = function() {
-    output.innerHTML = this.value;
-  }
-   
-   
-  </script>
+<center><h1>ROBOT CONTROLLER</h1></center>
 
-<form>
-    <label for="loc1">loc1:</label><br>
-    <input type="text" id="loc1" name="loc1"><br>
-    <label for="loc2">loc2</label><br>
-    <input type="text" id="loc2" name="loc2"><br>
-    <label for="loc3">loc3</label><br>
-    <input type="text" id="loc3" name="loc3"3
-  </form> -->
+<form method="post" action="/">
+    <center>
+    <input id="initial" type="submit" value="Configure" name="1"/>
+    <input id="initial" type="submit" value="Previous Tip Location  " name="9">
+    <input id="initial" type="submit" value="Adjust Angles" name="8">
+  </center>
+    <br>
+    <center>
+    <input id="mid"  type="submit" value="Pickup Location" name="2" />
+    <input id="mid" type="submit" value="Collection Location" name="3"/>
+    <input id="mid" type="submit" value="Deposit Location" name="4"/>
+  </center>
+  <br>
+  <center>
+      <input type="submit" value="Pickup Operation" name="5"/>
 
-<form method="POST">
-    <input name="text">
-    <input type="submit">
-
-    <input name="text">
-    <input type="submit">
-
+    <input type="submit" value="Collection Operation" name="6"/>
+    <input type="submit" value="Deposit Operation" name="7"/>
+      </center>
+      <br>
+<!-- if you change values here you have to change it in the flask code also -->
 </form>
 </body>
-</html>
-
