@@ -69,7 +69,7 @@ def set_data():
             complete = True
     print("setting data")
 
-app = Flask(__name__,template_folder='/home/jayee/flask_server/templates')
+app = Flask(__name__,template_folder='templates')
 CORS(app)
 
 @app.route("/", methods=['GET', 'POST'])

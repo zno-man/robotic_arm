@@ -28,7 +28,7 @@ state = 0
 
 def read_data():
     print("reading data")
-    f = open("/home/jayee/flask_server/communication.txt","r",)
+    f = open("communication.txt","r",)
     lst = []
     for i in f:
         lst.append(i)
@@ -116,7 +116,7 @@ def move_end_effector(ang):
 
 
 def write_data():
-    f = open("/home/jayee/flask_server/communication.txt","w")
+    f = open("communication.txt","w")
     f.write('0\n')
     f.close()
 
