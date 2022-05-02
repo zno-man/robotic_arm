@@ -47,7 +47,9 @@ flask run --host=0.0.0.0<br>
 ROS noetic was used.<br>
 rosversion --all : details are present in "rosversion_details.txt"
 
+<br>
 
+[<b>sample video of simulation</b>]("https://www.youtube.com/watch?v=KTm77U-Daog&list=PLR_FmEFFCB3JdIsf11Cr5g7DOb9cal-JV&index=35&t=249s&ab_channel=ebinjohny")
 
 
 
