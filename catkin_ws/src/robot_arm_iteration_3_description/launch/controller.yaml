@@ -1,0 +1,31 @@
+robot_arm_iteration_3:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers --------------------------------------
+  Rev10_position_controller:
+    type: position_controllers/JointPositionController
+    joint: Rev10
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  Rev11_position_controller:
+    type: position_controllers/JointPositionController
+    joint: Rev11
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  Rev12_position_controller:
+    type: position_controllers/JointPositionController
+    joint: Rev12
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  Rev13_position_controller:
+    type: position_controllers/JointPositionController
+    joint: Rev13
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  Slider14_position_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: Slider14
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  Rev15_position_controller:
+    type: position_controllers/JointPositionController
+    joint: Rev15
+    pid: {p: 100.0, i: 0.01, d: 10.0}
