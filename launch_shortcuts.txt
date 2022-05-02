@@ -1,0 +1,22 @@
+#terminal 1:
+
+cd catkin_ws
+source devel/setup.bash 
+roslaunch robot_arm_iteration_3_description gazebo.launch
+
+#terminal 2:
+
+source devel/setup.bash 
+roslaunch robot_arm_iteration_3_description controller.launch
+
+#terminal 3:
+
+cd catkin_ws/src/robot_control/src
+python3 control.py
+
+#terminal 4:
+
+cd "/home/jayee/flask_server"
+export FLASK_APP=flk.py
+export FLASK_ENV=development
+flask run --host=0.0.0.0
